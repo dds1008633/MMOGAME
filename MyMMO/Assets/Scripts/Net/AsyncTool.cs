@@ -1,33 +1,33 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-
+using LogicProtocol;
 namespace Net
 {
     public class AsyncTool
     {
-        public static byte[] PackLenInfo(byte[] data)
+        public static byte[] Package(byte[] data)
         {
             int len = data.Length;
-            byte[] pack=new byte[len+4];
-            byte[] head=BitConverter.GetBytes(len);
+            byte[] pack = new byte[len + 4];
+            byte[] head = BitConverter.GetBytes(len);
             head.CopyTo(pack, 0);
             data.CopyTo(pack, 4);
             return pack;
         }
 
-        public static byte[] Serialize<T>(T msg)where T : AsyncMsg
+        public static byte[] Serialize(Pkg msg)
         {
             byte[] data = null;
             MemoryStream ms = new MemoryStream();
-            BinaryFormatter bf = new BinaryFormatter();
             try
             {
-                bf.Serialize(ms, msg);
+                Serializer.Serialize(ms, msg);
                 ms.Seek(0, SeekOrigin.Begin);
                 data = ms.ToArray();
             }
@@ -41,15 +41,14 @@ namespace Net
             }
             return data;
         }
-        
-        public static T DeSerialize<T>(byte[] bytes) where T : AsyncMsg
+
+        public static Pkg DeSerialize(byte[] bytes)
         {
-            T msg = null;
-            MemoryStream ms=new MemoryStream(bytes);
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            Pkg msg = null;
+            MemoryStream ms = new MemoryStream(bytes);
             try
             {
-                msg=(T)binaryFormatter.Deserialize(ms);
+                msg = Serializer.Deserialize<Pkg>(ms);
             }
             catch (SerializationException e)
             {
@@ -62,7 +61,6 @@ namespace Net
 
             return msg;
         }
-
 
         public static Action<string> LogFunc;
 

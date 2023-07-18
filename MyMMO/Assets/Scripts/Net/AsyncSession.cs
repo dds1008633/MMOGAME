@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
-
+using LogicProtocol;
+using ProtoBuf;
 namespace Net
 {
+
     public enum AsyncSessionState
     {
         NONE,
@@ -15,7 +17,7 @@ namespace Net
     /// <summary>
     /// 网络会话，数据收发
     /// </summary>
-    public abstract class AsyncSession<T> where T : AsyncMsg, new()
+    public abstract class AsyncSession
     {
         private Socket socket;
         private AsyncCallback receiveHeadCallback;
@@ -137,7 +139,7 @@ namespace Net
                 else //数据头循环处理
                 {
                     //反序列化，处理网络消息的业务逻辑
-                    T msg = AsyncTool.DeSerialize<T>(pack.bodyBuff);
+                    var msg = AsyncTool.DeSerialize(pack.bodyBuff);
                     OnReceiveMsg(msg);
                     pack.ResetData();
                     socket.BeginReceive(
@@ -158,9 +160,9 @@ namespace Net
 
         }
 
-        public bool SendMsg(AsyncMsg msg)
+        public bool SendMsg(Pkg msg)
         {
-            byte[] data = AsyncTool.PackLenInfo(AsyncTool.Serialize(msg));
+            byte[] data = AsyncTool.Package(AsyncTool.Serialize(msg));
             return SendMsg(data);
         }
 
@@ -213,13 +215,13 @@ namespace Net
             }
         }
 
-        protected abstract void OnReceiveMsg(T msg);
+        protected abstract void OnReceiveMsg(Pkg msg);
 
         protected abstract void OnConnected(bool result);
 
 
         protected abstract void OnDisconnected();
-       
+
 
         public void CloseSession()
         {

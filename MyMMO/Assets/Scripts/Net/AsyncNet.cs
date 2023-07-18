@@ -1,16 +1,14 @@
-﻿using System;
+﻿using AsyncNetExampleClient;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
 namespace Net
-{
-    [Serializable]
-    public abstract class AsyncMsg { }
-
-    public class AsyncNet<T, K> where T : AsyncSession<K>, new() where K : AsyncMsg, new()
+{  
+    public class AsyncNet 
     {
-        public T session;        
+        public ClientSession session;        
         private Socket socket = null;
         public int backlog = 10;
         private AsyncCallback serverConnectCallback;
@@ -34,7 +32,7 @@ namespace Net
 
         private void ServerConnectCB(IAsyncResult ar)
         {
-            session = new T();
+            session = new ClientSession();
             try
             {
                 socket.EndConnect(ar);
