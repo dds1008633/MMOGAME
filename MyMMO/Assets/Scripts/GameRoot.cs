@@ -8,37 +8,37 @@ public class GameRoot : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    AsyncNet client;
+    AsyncNet net;
 
     void Start()
-    {        
-        client = new AsyncNet();
-        client.StartClient("192.168.31.143", 8888);
+    {
+        net = AsyncNet.CreateInstance();
+        net.StartClient("192.168.31.143", 8888);
     }
 
     void Update()
     {
-        if (client != null)
+        if (net != null)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                client.session.ReqPBLogin();
+                net.session.ReqPBLogin();
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                client.CloseClient();
+                net.CloseClient();
             }
         }
     }
 
     private void OnApplicationQuit()
     {
-        if (client != null && client.session != null)
+        if (net != null && net.session != null)
         {
-            if (client.session.sessionSate == AsyncSessionState.CONNECTED)
+            if (net.session.sessionSate == AsyncSessionState.CONNECTED)
             {
-                client.CloseClient();
+                net.CloseClient();
             }
         }
     }

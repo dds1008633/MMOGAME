@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace Net
 {  
-    public class AsyncNet 
+    public class AsyncNet:SingletonMono<AsyncNet>
     {
         public ClientSession session;        
         private Socket socket = null;
