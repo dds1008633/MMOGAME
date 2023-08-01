@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Tools;
+using UnityEngine;
 
 namespace Net
 {  
-    public class AsyncNet:SingletonMono<AsyncNet>
+    public class AsyncNet:Singleton<AsyncNet>
     {
         public ClientSession session;        
         private Socket socket = null;
@@ -58,6 +60,26 @@ namespace Net
             {
                 socket = null;
             }
+        }
+
+        
+
+
+        public override void Update()
+        {
+            LogTool.Log(Time.deltaTime,Tools.ConsoleColor.Green);
+        }
+
+        protected override void onInit()
+        {
+            base.onInit();
+            UpdaterInit();
+        }
+
+        protected override void onRemove()
+        {
+            base.onRemove();
+            UpdaterDestory();
         }
         #endregion
     }      

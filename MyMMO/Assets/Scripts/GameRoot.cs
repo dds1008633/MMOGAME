@@ -3,42 +3,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.PackageManager;
 using UnityEngine;
-
+using Tools;
 public class GameRoot : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    AsyncNet net;
+    private AsyncNet netInstance;
+    private float deltaTime = 0.0f;
 
+    private void Awake()
+    {        
+        Application.targetFrameRate = 60;
+    }
+
+    void OnGUI()
+    {
+        int fps = (int)(1.0f / deltaTime);
+        GUI.Label(new Rect(20, 20, 300, 60), "FPS: " + fps);
+    }
     void Start()
     {
-        net = AsyncNet.CreateInstance();
-        net.StartClient("192.168.31.143", 8888);
+        DontDestroyOnLoad(this);
+        GameUpdater.CreateInstance();
+        LogTool.Log("ÍøÂçÄ£¿éÆô¶¯...", ConsoleColor.Red);
+        netInstance = AsyncNet.CreateInstance();
+        netInstance.StartClient("192.168.31.143", 8888);
+        
     }
 
     void Update()
     {
-        if (net != null)
+        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+        if (netInstance != null)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                net.session.ReqPBLogin();
+                netInstance.session.ReqPBLogin();
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                net.CloseClient();
+                netInstance.CloseClient();
             }
         }
     }
 
     private void OnApplicationQuit()
     {
-        if (net != null && net.session != null)
+        if (netInstance != null && netInstance.session != null)
         {
-            if (net.session.sessionSate == AsyncSessionState.CONNECTED)
+            if (netInstance.session.sessionSate == AsyncSessionState.CONNECTED)
             {
-                net.CloseClient();
+                netInstance.CloseClient();
             }
         }
     }
