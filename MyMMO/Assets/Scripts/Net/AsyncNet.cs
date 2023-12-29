@@ -67,7 +67,7 @@ namespace Net
 
         public override void Update()
         {
-            LogTool.Log(Time.deltaTime,Tools.ConsoleColor.Green);
+            //LogTool.Log(Time.deltaTime,Tools.ConsoleColor.Green);
         }
 
         protected override void onInit()

@@ -25,14 +25,14 @@ public class GameRoot : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         GameUpdater.CreateInstance();
+        EventManager.CreateInstance();
         LogTool.Log("ÍøÂçÄ£¿éÆô¶¯...", ConsoleColor.Red);
         netInstance = AsyncNet.CreateInstance();
-        netInstance.StartClient("192.168.31.143", 8888);
-        
+        netInstance.StartClient("192.168.31.143", 8888);      
     }
 
     void Update()
-    {
+    {      
         deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
         if (netInstance != null)
         {

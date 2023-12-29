@@ -6,17 +6,36 @@ using UnityEngine;
 /// <summary>
 /// 事件基类
 /// </summary>
-public abstract class BaseEventArgs : EventArgs, IReference
+public class BaseEventArgs : EventArgs, IReference
 {
 
+    protected int id;
     /// <summary>
     /// 获取类型编号
     /// </summary>
-    public abstract int Id
+    public int Id
     {
-        get;
+        get => id;
+        set => id = value;
     }
 
-    public abstract void Clear();
-    
+    public void Clear()
+    {
+
+    }
+
+}
+
+public class TestEventArgs : BaseEventArgs
+{
+
+    public string aaaa;
+
+    public static TestEventArgs Create(int id,string aaa)
+    {
+        TestEventArgs args = ReferencePool.Acquire<TestEventArgs>();
+        args.aaaa = aaa;
+        args.Id = id;
+        return args;
+    }
 }
